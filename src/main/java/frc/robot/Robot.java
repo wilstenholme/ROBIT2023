@@ -4,17 +4,12 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
-// import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 
 /**
@@ -24,10 +19,10 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
  * directory.
  */
 public class Robot extends TimedRobot {
-  private WPI_TalonSRX leftFrontMotor;
-  private WPI_TalonSRX rightFrontMotor;
-  private WPI_TalonSRX leftBackMotor;
-  private WPI_TalonSRX rightBackMotor;
+  private WPI_VictorSPX leftFrontMotor;
+  private WPI_VictorSPX rightFrontMotor;
+  private WPI_VictorSPX leftBackMotor;
+  private WPI_VictorSPX rightBackMotor;
 
   private MotorControllerGroup leftMotorsGroup;
   private MotorControllerGroup rightMotorsGroup;
@@ -43,14 +38,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    leftFrontMotor = new WPI_TalonSRX(1);
-    leftBackMotor = new WPI_TalonSRX(2);
-    rightFrontMotor = new WPI_TalonSRX(3);
-    rightBackMotor = new WPI_TalonSRX(4);
+    leftFrontMotor = new WPI_VictorSPX(1);
+    leftBackMotor = new WPI_VictorSPX(2);
+    rightFrontMotor = new WPI_VictorSPX(3);
+    rightBackMotor = new WPI_VictorSPX(4);
 
     leftMotorsGroup = new MotorControllerGroup(leftFrontMotor, leftBackMotor);
     rightMotorsGroup = new MotorControllerGroup(rightFrontMotor, rightBackMotor);
-    drivebase = new DifferentialDrive(leftMotorsGroup, rightMotorsGroup);
+    drivebase = new DifferentialDrive(rightMotorsGroup, leftMotorsGroup);
 
     joystick = new Joystick(0);
 
@@ -83,7 +78,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during teleoperated mode. */
   @Override
   public void teleopPeriodic() {
-    drivebase.arcadeDrive(joystick.getRawAxis(4), joystick.getRawAxis(1));
+    drivebase.arcadeDrive(joystick.getRawAxis(4), -joystick.getRawAxis(1));
   }
 
   /** This function is called once each time the robot enters test mode. */
