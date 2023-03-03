@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
@@ -23,12 +25,14 @@ public class Robot extends TimedRobot {
   private WPI_VictorSPX rightFrontMotor;
   private WPI_VictorSPX leftBackMotor;
   private WPI_VictorSPX rightBackMotor;
+  private WPI_VictorSPX manipulatorMotor;
 
   private MotorControllerGroup leftMotorsGroup;
   private MotorControllerGroup rightMotorsGroup;
   private DifferentialDrive drivebase;
 
-  private Joystick joystick;
+  // private Joystick joystick;
+  private XboxController xbox;
 
   private Timer timer;
 
@@ -38,16 +42,18 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    leftFrontMotor = new WPI_VictorSPX(1);
-    leftBackMotor = new WPI_VictorSPX(2);
-    rightFrontMotor = new WPI_VictorSPX(3);
-    rightBackMotor = new WPI_VictorSPX(4);
+    rightFrontMotor = new WPI_VictorSPX(1);
+    rightBackMotor = new WPI_VictorSPX(2);
+    leftFrontMotor = new WPI_VictorSPX(3);
+    leftBackMotor = new WPI_VictorSPX(4);
+    manipulatorMotor = new WPI_VictorSPX(5);
 
     leftMotorsGroup = new MotorControllerGroup(leftFrontMotor, leftBackMotor);
     rightMotorsGroup = new MotorControllerGroup(rightFrontMotor, rightBackMotor);
     drivebase = new DifferentialDrive(rightMotorsGroup, leftMotorsGroup);
 
-    joystick = new Joystick(0);
+    // joystick = new Joystick(0);
+    xbox = new XboxController(0);
 
     timer = new Timer();
   }
@@ -78,7 +84,18 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during teleoperated mode. */
   @Override
   public void teleopPeriodic() {
-    drivebase.arcadeDrive(joystick.getRawAxis(4), -joystick.getRawAxis(1));
+    drivebase.arcadeDrive(xbox.getRawAxis(4), -xbox.getRawAxis(1));
+
+    double inSpeed = 0.5;
+    double outSpeed  = -1.0;
+
+    if (xbox.getAButton()) {
+      manipulatorMotor.set(inSpeed);
+    } else if (xbox.getYButton()) {
+      manipulatorMotor.set(outSpeed);
+    } else {
+      manipulatorMotor.set(0);
+    }
   }
 
   /** This function is called once each time the robot enters test mode. */
