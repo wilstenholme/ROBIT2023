@@ -71,11 +71,20 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    // Drive for 2 seconds
-    if (timer.get() < 2.0) {
-      // Drive forwards half speed, make sure to turn input squaring off
-      drivebase.arcadeDrive(0.5, 0.0, false);
-    } else {
+    if (timer.get() < 1.0) {
+      manipulatorMotor.set(-1.0);
+    }
+    
+    if (timer.get() >= 1.0 && timer.get() < 3.0) {
+      manipulatorMotor.stopMotor();
+
+
+      // drivebase.arcadeDrive(0.0, 0.10, false);
+      // double speed = -0.2;
+      // drivebase.tankDrive(speed, speed, true);
+    }
+    
+    if (timer.get() >= 3.0) {
       drivebase.stopMotor(); // stop robot
     }
   }
