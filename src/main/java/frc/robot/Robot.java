@@ -13,11 +13,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
-
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the manifest file in the resource
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the
+ * name of this class or
+ * the package after creating this project, you must also update the manifest
+ * file in the resource
  * directory.
  */
 public class Robot extends TimedRobot {
@@ -31,13 +33,14 @@ public class Robot extends TimedRobot {
   private MotorControllerGroup rightMotorsGroup;
   private DifferentialDrive drivebase;
 
-  // private Joystick joystick;
   private XboxController xbox;
+  private Joystick joystick;
 
   private Timer timer;
 
   /**
-   * This function is run when the robot is first started up and should be used for any
+   * This function is run when the robot is first started up and should be used
+   * for any
    * initialization code.
    */
   @Override
@@ -52,8 +55,8 @@ public class Robot extends TimedRobot {
     rightMotorsGroup = new MotorControllerGroup(rightFrontMotor, rightBackMotor);
     drivebase = new DifferentialDrive(rightMotorsGroup, leftMotorsGroup);
 
-    // joystick = new Joystick(0);
     xbox = new XboxController(0);
+    joystick = new Joystick(1);
 
     timer = new Timer();
   }
@@ -77,32 +80,59 @@ public class Robot extends TimedRobot {
     }
   }
 
-  /** This function is called once each time the robot enters teleoperated mode. */
+  /**
+   * This function is called once each time the robot enters teleoperated mode.
+   */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+  }
 
   /** This function is called periodically during teleoperated mode. */
   @Override
   public void teleopPeriodic() {
-    drivebase.arcadeDrive(xbox.getRawAxis(4), -xbox.getRawAxis(1));
+    drivebase.arcadeDrive(xbox.getRightX(), -xbox.getLeftY());
 
-    double inSpeed = 0.5;
-    double outSpeed  = -1.0;
+    manipulatorMotor.set(joystick.getRawAxis(1));
 
-    if (xbox.getAButton()) {
-      manipulatorMotor.set(inSpeed);
-    } else if (xbox.getYButton()) {
-      manipulatorMotor.set(outSpeed);
-    } else {
+    // double inSpeed = 0.5;
+    // double outSpeed = -1.0;
+    // if (joystick.getRawButton(12)) {
+    // manipulatorMotor.set(inSpeed);
+    // } else if (xbox.getYButton()) {
+    // manipulatorMotor.set(outSpeed);
+    // } else {
+    // manipulatorMotor.set(0);
+    // }
+
+    if (xbox.getBButton()) {
       manipulatorMotor.set(0);
+    } else if (xbox.getAButton()) {
+      manipulatorMotor.set(0.5);
+    } else if (xbox.getYButton() || joystick.getRawButton(8)) {
+      manipulatorMotor.set(-1.0);
     }
+
+    if (joystick.getRawButton(10)) {
+      manipulatorMotor.set(0);
+    } else if (joystick.getRawButton(12)) { // IN SLOWER
+      manipulatorMotor.set(0.3);
+    } else if (joystick.getRawButton(11)) { // IN FASTER
+      manipulatorMotor.set(0.6);
+    } else if (joystick.getRawButton(8)) { // OUT SLOWER
+      manipulatorMotor.set(-0.3);
+    } else if (joystick.getRawButton(7)) { // OUT FASTER
+      manipulatorMotor.set(-0.8);
+    }
+
   }
 
   /** This function is called once each time the robot enters test mode. */
   @Override
-  public void testInit() {}
+  public void testInit() {
+  }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 }
