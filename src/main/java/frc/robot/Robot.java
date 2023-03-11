@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -59,6 +61,8 @@ public class Robot extends TimedRobot {
     joystick = new Joystick(1);
 
     timer = new Timer();
+
+    CameraServer.startAutomaticCapture();
   }
 
   /** This function is run once each time the robot enters autonomous mode. */
@@ -78,14 +82,27 @@ public class Robot extends TimedRobot {
     if (timer.get() >= 1.0 && timer.get() < 3.0) {
       manipulatorMotor.stopMotor();
 
+      // Climbing, somewhat successful?
+      // double speedRight = 0.47;
+      // double speedLeft = -0.44;
 
-      // drivebase.arcadeDrive(0.0, 0.10, false);
-      // double speed = -0.2;
-      // drivebase.tankDrive(speed, speed, true);
+      // v1
+      double speedRight = 0.27;
+      double speedLeft = -0.20;
+
+      rightFrontMotor.set(speedRight);
+      rightBackMotor.set(speedRight);
+      leftFrontMotor.set(speedLeft);
+      leftBackMotor.set(speedLeft);
     }
     
     if (timer.get() >= 3.0) {
       drivebase.stopMotor(); // stop robot
+      
+      rightFrontMotor.stopMotor();
+      rightBackMotor.stopMotor();
+      leftFrontMotor.stopMotor();
+      leftBackMotor.stopMotor();
     }
   }
 
